@@ -1,0 +1,451 @@
+<html>
+	<head>
+		<link rel="stylesheet" href='jquery.mobile-1.4.4.min.css'/>
+		<script type="text/javascript" src="jquery-1.11.1.min.js"></script>
+		<script type="text/javascript" src='jquery.mobile-1.4.4.min.js'></script>
+		<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script> 
+		<script>
+			var local="";
+			var geocoder;
+ 
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
+} 
+//Get the latitude and the longitude;
+function successFunction(position) {
+    var lat = position.coords.latitude;
+    var lng = position.coords.longitude;
+    codeLatLng(lat, lng)
+}
+ 
+function errorFunction(){
+    alert("Geocoder failed");
+}
+ 
+  function initialize() {
+    geocoder = new google.maps.Geocoder();
+ 
+ 
+ 
+  }
+ 
+  function codeLatLng(lat, lng) {
+ 
+    var latlng = new google.maps.LatLng(lat, lng);
+    geocoder.geocode({'latLng': latlng}, function(results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+      console.log(results)
+        if (results[1]) {
+         //formatted address
+         local=results[0].formatted_address;
+        //find country name
+             for (var i=0; i<results[0].address_components.length; i++) {
+            for (var b=0;b<results[0].address_components[i].types.length;b++) {
+ 
+            //there are different types that might hold a city admin_area_lvl_1 usually does in come cases looking for sublocality type will be more appropriate
+                if (results[0].address_components[i].types[b] == "administrative_area_level_1") {
+                    //this is the object you are looking for
+                    city= results[0].address_components[i];
+                    break;
+                }
+            }
+        }
+        //city data
+        //$('#location').text(city.short_name + " " + city.long_name);
+ 
+ 
+        } else {
+          local="No results found";
+        }
+      } else {
+        local="Geocoder failed due to: " + status;
+      }
+    });
+  }
+			
+			
+			function syncAjax(u){
+				console.log(u);
+				var obj=$.ajax(
+					{url:u,
+					 async:false
+					 }
+				);
+				console.log(obj.responseText);
+				return $.parseJSON(obj.responseText);
+			}
+				
+			$(document).ready(function(){
+			var uname="";
+			var ucode="";
+			var id=0;
+
+			//Generated questions for easy mode
+			function gen(){
+			var i= parseInt($('#count').text(), 10);
+			var arr = ["What is 1+1?","Entomology is the science that studies..."
+			,"The energy of food is measured in...","Insecticide is a chemical to kill rats.(true/false)"
+			,"What is the uppermost layer of the earth's crust?","25-(10+x)=6+4. x=?. (a.3 b.4 c.5 d.7)","Done!!! Click 'Rankings' to view your scores"];
+			if(i<=6){
+			sum = i+1;
+
+			$('#quest').text(arr[sum]);
+			$('#count').text(sum);
+			$('#ans').val("");
+			$('#status').text("");
+			}
+			$('#next').attr("disabled", true);
+			$('#go').attr("disabled", true);
+			}
+			
+			//Corresponding answers
+			$('#next').attr("disabled", true);
+			function confirm(){
+			var value = $('#ans').val();
+			if (value == "insects"|| value == 2 || value == "thiamine" || value == "false" || value == "true" || value == "calories" || value == "soil" || value == "c"){
+			$('#status').text('CORRECT!!!!!');
+			$('#next').attr("disabled", false);
+			var get = parseInt($('#nums').text(), 10);
+			var add = get + 100;
+			$('#nums').text(add);
+			var u ="http://localhost/qna/qna_json.php?cmd=5&id="+id+"&marks="+add;
+			r=syncAjax(u);
+			}
+			else{
+			$('#status').text('WRONG!!!!!');
+			var get = parseInt($('#nums').text(), 10);
+			var sub = get - 60;
+			$('#nums').text(sub);
+			var u ="http://localhost/qna/qna_json.php?cmd=5&id="+id+"&marks="+sub;
+			r=syncAjax(u);
+			}
+
+			}
+			
+			$('#next').click(function(){
+			gen();
+			});
+			
+			$('#go').click(function(){
+			gen();
+			});
+				
+			$("#answer").click(function(){
+			confirm();
+			});
+			
+			//end
+			
+			
+			//Generated questions for hard mode
+			function gen2(){
+			var i= parseInt($('#count2').text(), 10);
+			var arr2 = ["Triskadeccaphobia is the fear of..","What fish can hold objects in its tail?"
+			,"What do the letters 'MG' stand for on cars?","C2 H5 OH is the formula of what chemical?"
+			,"Which state in USA does KFC has its headquarters?","25-(10+x)=6+4. x=?. (a.3 b.4 c.5 d.7)","Done!!! Click 'Rankings' to view your scores"];
+			if(i<=6){
+			sum = i+1;
+			$('#quest2').text(arr2[sum]);
+			$('#count2').text(sum);
+			$('#ans2').val("");
+			$('#status2').text("");
+			}
+			$('#next2').attr("disabled", true);
+			$('#go2').attr("disabled", true);
+			}
+			
+			//Corresponding answers
+			$('#next2').attr("disabled", true);
+			function confirm2(){
+			var value2 = $('#ans2').val();
+			if (value2 == "morris garages" || value2 == "Morris Garages"|| value2 == 13 || value2 == "alcohol" || value2 == "Kentucky" || value2 == "true" || value2 == "seahorse" || value2 == "kentucky" || value2 == "c"){
+			$('#status2').text('CORRECT!!!!!');
+			$('#next2').attr("disabled", false);
+			var get = parseInt($('#nums2').text(), 10);
+			var add = get + 100;
+			$('#nums2').text(add);
+			var u ="http://localhost/qna/qna_json.php?cmd=5&id="+id+"&marks="+add;
+			r=syncAjax(u);
+			}
+			else{
+			$('#status2').text('WRONG!!!!!');
+			var get = parseInt($('#nums2').text(), 10);
+			var sub = get - 60;
+			$('#nums2').text(sub);
+			var u ="http://localhost/qna/qna_json.php?cmd=5&id="+id+"&marks="+sub;
+			r=syncAjax(u);
+			}
+
+			}
+			
+			$('#next2').click(function(){
+			gen2();
+			});
+			
+			$('#go2').click(function(){
+			gen2();
+			});
+				
+			$("#answer2").click(function(){
+			confirm2();
+			});
+			
+			//end
+			
+			$("#playEasy").click(function(){
+			var u ="http://localhost/qna/qna_json.php?cmd=2&name="+uname+"&code="+ucode;
+			r=syncAjax(u);
+			 window.location.href='#playEasy';
+			 $("#nums").text(r.players.marks);
+			 id=r.players.pid;
+			});
+			
+			$("#playHard").click(function(){
+			var u ="http://localhost/qna/qna_json.php?cmd=2&name="+uname+"&code="+ucode;
+			r=syncAjax(u);
+			 window.location.href='#playEasy';
+			 $("#nums2").text(r.players.marks);
+			 id=r.players.pid;
+			});
+			
+			
+			$("#getRanks").click(function(){
+			r=syncAjax("qna_json.php?cmd=1");
+			for(var i=0;i<r.players.length;i++){
+			var players = r.players[i].name + " scored " + r.players[i].marks;
+			$('<li>'+ players +'</li>').appendTo($('#ranks'));
+			}
+			});
+			
+			$("#login").click(function(){
+			uname=$('#username').val();
+			ucode=$('#code').val();
+			var u ="http://localhost/qna/qna_json.php?cmd=2&name="+uname+"&code="+ucode;
+			r=syncAjax(u);
+			db=r.players.message;
+			if(db=='empty'){
+			alert("Sorry, username or code is incorrect, please try again");
+			}
+			if(db!='empty'){
+			alert("Success");
+			window.location.href='#play';
+			$('#name').text(r.players.name);
+			$('#points').text(r.players.marks);
+			}
+			});
+			
+				$("#signup").click(function(){
+				window.location.href='#signup';
+				});
+	
+				$("#sign").click(function(){
+				var name = $("#Nname").val();
+				var phone = $("#phone").val();
+				var u ="http://localhost/qna/qna_json.php?cmd=3&name="+name+"&number="+phone+"&location="+local;
+				r=syncAjax(u);
+				alert("You will recieve an SMS shortly containing the code to log in");
+				r=syncAjax("http://localhost/qna/qna_json.php?cmd=4&name="+name);
+				window.location.href='#play';
+				});
+	
+			});
+		</script>
+	</head>
+	<body onload="initialize()">
+	
+	<!--Log In-->
+<div data-role="page" id="login">
+<div data-role="header">
+<div data-role="navbar">
+	<ul>
+		<h1 align="center">Tha Cartel QnA</h1>
+	</ul>
+</div>
+</div>
+
+<div role="main" class="ui-content" align="center"> 
+<p style='font-size:200%'>Welcome</p>
+<p style='font-size:200%'>Login To Begin</p>
+<input type="text" id="username" placeholder="username">
+<input type="text" id="code" placeholder="code">
+<button id="login">Login</button>
+<button id="signup">Sign Up</button>
+</div>
+
+<div data-role="footer">
+<div data-role="navbar">
+<ul>
+<h1 align="center">Developed By:Tha Cartel</h1>
+</ul>
+</div>
+</div>
+</div>
+
+<!--Sign Up-->
+
+<div data-role="page" id="signup">
+<div data-role="header">
+<div data-role="navbar">
+	<ul>	
+	<li><a	href="#home" data-transition="pop" data-icon="home">Home</a></li>
+	<h1 align="center">Tha Cartel Bus App</h1>
+	<li><a	href="#reserve" data-transition="pop" data-icon="carat-r">Reservations</a></li>
+	</ul>
+</div>
+</div>
+
+
+<div role="main" class="ui-content" align="center">
+	<p>Sign up Right Here<p>
+	<form>
+	<table>
+	<tr><td>name:</td><td><input type="text" id="Nname" placeholder="name"></td></tr>
+	<tr><td>phoneNo.:</td><td><input type="text" id="phone" placeholder="number"></td></tr>
+	</table>
+	<button id="sign">SIGN!!</button>
+	</form>
+</div>
+
+<div data-role="footer">
+<h1>Developed By: Tha Cartel</h1>
+</div>
+</div>
+	
+	<!--Home-->
+<div data-role="page" id="play">
+<div data-role="header">
+<div data-role="navbar">
+	<ul>	
+	<li><a	href="#login" data-transition="pop" data-icon="delete">Log out</a></li>
+		<h1 align="center">Tha Cartel QnA</h1>
+	<li><a	href="#rankings" data-transition="pop" data-icon="carat-r">Rankings</a></li>
+</div>
+</div>
+
+<div role="main" class="ui-content" align="center">
+<p id='name' style='font-size:100%'></p>	
+<p id='points' style='font-size:400%'></p>
+
+<button id="playEasy" ><a data-transition="pop">Start Easy Mode</a></button>
+<button id="playHard" ><a data-transition="pop">Start Hard Mode</a></button>
+</div>
+</div>
+
+<div data-role="footer">
+<div data-role="navbar">
+<ul>
+<!--li id="done" onclick="refresh()"><a data-transition="pop" data-icon="refresh">Done For Today!!!</a></li-->
+<h1 align="center">Developed By:Tha Cartel</h1>
+<!--li id="log"><a href="#trip" data-transition="pop" data-icon="grid">Trip Log</a></li-->
+</ul>
+</div>
+</div>
+</div>
+	
+	
+	<!--Play Easy-->
+<div data-role="page" id="playEasy">
+<div data-role="header">
+<div data-role="navbar">
+	<ul>	
+	<li><a	href="#login" data-transition="pop" data-icon="delete">Log out</a></li>
+		<h1 align="center">Tha Cartel QnA Game</h1>
+	<li><a	href="#rankings" data-transition="pop" data-icon="carat-r">Rankings</a></li>
+</div>
+</div>
+<div align="left">
+<p style="font-size:100%">No.</p><p id="count" style="font-size:100%"><font color="#F6F6F6">-1</font></p>
+<p id="nums">0</p>
+</div>
+<div role="main" class="ui-content" align="center"> 
+	<p id="quest" style="font-size:300%"></p>
+		<input type="text" id="ans" placeholder="Answer Here!!!">
+		<p id="status" style="font-size:190%"></p>
+<div data-role="controlgroup" data-type="horizontal">
+<button id="go" data-icon="tick">Play</button>
+<button id="answer" data-icon="plus">ANSWER</button>
+<button id="next" data-icon="carat-r">NEXT</button>
+</div>
+</div>
+
+<div data-role="footer">
+<div data-role="navbar">
+<ul>
+<h1 align="center">Developed By:Tha Cartel</h1>
+</ul>
+</div>
+</div>
+</div>
+
+
+	<!--Play Hard-->
+<div data-role="page" id="playHard">
+<div data-role="header">
+<div data-role="navbar">
+	<ul>	
+	<li><a	href="#login" data-transition="pop" data-icon="delete">Log out</a></li>
+		<h1 align="center">Tha Cartel QnA Game</h1>
+	<li><a id="rank" href="#rankings" data-transition="pop" data-icon="carat-r">Rankings</a></li>
+</div>
+</div>
+<div align="left">
+<p style="font-size:100%">No.</p><p id="count2" style="font-size:100%"><font color="#F6F6F6">-1</font></p>
+<p id="nums2"></p>
+</div>
+
+<div role="main" class="ui-content" align="center"> 
+	<p id="quest2" style="font-size:300%"></p>
+		<input type="text" id="ans2" placeholder="Answer Here!!!">
+		<p id="status2" style="font-size:190%"></p>
+<div data-role="controlgroup" data-type="horizontal">
+<button id="go2" data-icon="tick">PLAY</button>
+<button id="answer2" data-icon="plus">ANSWER</button>
+<button id="next2" data-icon="carat-r">NEXT</button>
+</div>
+</div>
+
+<div data-role="footer">
+<div data-role="navbar">
+<ul>
+<h1 align="center">Developed By:Tha Cartel</h1>
+</ul>
+</div>
+</div>
+</div>
+
+
+	<!--Rankings-->
+<div data-role="page" id="rankings">
+<div data-role="header">
+<div data-role="navbar">
+	<ul>	
+	<li><a	href="#login" data-transition="pop" data-icon="delete">Log out</a></li>
+		<h1 align="center">Tha Cartel QnA</h1>
+	<li><a id="rank"	href="#rankings" data-transition="pop" data-icon="carat-r">Rankings</a></li>
+</div>
+</div>
+
+<div role="main" class="ui-content" align="center">
+<p id='name' style='font-size:100%'></p>	
+<p id='points' style='font-size:400%'></p>
+<button id="getRanks">Get Rankings</button>
+<ul id='ranks'>
+	
+</ul>
+</div>
+</div>
+
+<div data-role="footer">
+<div data-role="navbar">
+<ul>
+<!--li id="done" onclick="refresh()"><a data-transition="pop" data-icon="refresh">Done For Today!!!</a></li-->
+<h1 align="center">Developed By:Tha Cartel</h1>
+<!--li id="log"><a href="#trip" data-transition="pop" data-icon="grid">Trip Log</a></li-->
+</ul>
+</div>
+</div>
+</div>
+
+
+	</body>
+</html>
