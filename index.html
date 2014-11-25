@@ -108,7 +108,7 @@ function errorFunction(){
 			var get = parseInt($('#nums').text(), 10);
 			var add = get + 100;
 			$('#nums').text(add);
-			var u ="http://localhost/qna/qna_json.php?cmd=5&id="+id+"&marks="+add;
+			var u ="http://10.10.28.180:80/qna/qna_json.php?cmd=5&id="+id+"&marks="+add;
 			r=syncAjax(u);
 			}
 			else{
@@ -116,7 +116,7 @@ function errorFunction(){
 			var get = parseInt($('#nums').text(), 10);
 			var sub = get - 60;
 			$('#nums').text(sub);
-			var u ="http://localhost/qna/qna_json.php?cmd=5&id="+id+"&marks="+sub;
+			var u ="http://10.10.28.180:80/qna/qna_json.php?cmd=5&id="+id+"&marks="+sub;
 			r=syncAjax(u);
 			}
 
@@ -164,7 +164,7 @@ function errorFunction(){
 			var get = parseInt($('#nums2').text(), 10);
 			var add = get + 100;
 			$('#nums2').text(add);
-			var u ="http://localhost/qna/qna_json.php?cmd=5&id="+id+"&marks="+add;
+			var u ="http://10.10.28.180:80/qna/qna_json.php?cmd=5&id="+id+"&marks="+add;
 			r=syncAjax(u);
 			}
 			else{
@@ -172,7 +172,7 @@ function errorFunction(){
 			var get = parseInt($('#nums2').text(), 10);
 			var sub = get - 60;
 			$('#nums2').text(sub);
-			var u ="http://localhost/qna/qna_json.php?cmd=5&id="+id+"&marks="+sub;
+			var u ="http://10.10.28.180:80/qna/qna_json.php?cmd=5&id="+id+"&marks="+sub;
 			r=syncAjax(u);
 			}
 
@@ -193,7 +193,7 @@ function errorFunction(){
 			//end
 			
 			$("#playEasy").click(function(){
-			var u ="http://localhost/qna/qna_json.php?cmd=2&name="+uname+"&code="+ucode;
+			var u ="http://10.10.28.180:80/qna/qna_json.php?cmd=2&name="+uname+"&code="+ucode;
 			r=syncAjax(u);
 			 window.location.href='#playEasy';
 			 $("#nums").text(r.players.marks);
@@ -201,7 +201,7 @@ function errorFunction(){
 			});
 			
 			$("#playHard").click(function(){
-			var u ="http://localhost/qna/qna_json.php?cmd=2&name="+uname+"&code="+ucode;
+			var u ="http://10.10.28.180:80/qna/qna_json.php?cmd=2&name="+uname+"&code="+ucode;
 			r=syncAjax(u);
 			 window.location.href='#playEasy';
 			 $("#nums2").text(r.players.marks);
@@ -210,7 +210,7 @@ function errorFunction(){
 			
 			
 			$("#getRanks").click(function(){
-			r=syncAjax("qna_json.php?cmd=1");
+			r=syncAjax("http://10.10.28.180:80/qna/qna_json.php?cmd=1");
 			for(var i=0;i<r.players.length;i++){
 			var players = r.players[i].name + " scored " + r.players[i].marks;
 			$('<li>'+ players +'</li>').appendTo($('#ranks'));
@@ -220,7 +220,7 @@ function errorFunction(){
 			$("#login").click(function(){
 			uname=$('#username').val();
 			ucode=$('#code').val();
-			var u ="http://localhost/qna/qna_json.php?cmd=2&name="+uname+"&code="+ucode;
+			var u ="http://10.10.28.180:80/qna/qna_json.php?cmd=2&name="+uname+"&code="+ucode;
 			r=syncAjax(u);
 			db=r.players.message;
 			if(db=='empty'){
@@ -241,10 +241,10 @@ function errorFunction(){
 				$("#sign").click(function(){
 				var name = $("#Nname").val();
 				var phone = $("#phone").val();
-				var u ="http://localhost/qna/qna_json.php?cmd=3&name="+name+"&number="+phone+"&location="+local;
+				var u ="http://10.10.28.180:80/qna/qna_json.php?cmd=3&name="+name+"&number="+phone+"&location="+local;
 				r=syncAjax(u);
 				alert("You will recieve an SMS shortly containing the code to log in");
-				r=syncAjax("http://localhost/qna/qna_json.php?cmd=4&name="+name);
+				r=syncAjax("http://10.10.28.180:80/qna/qna_json.php?cmd=4&name="+name);
 				window.location.href='#play';
 				});
 	
